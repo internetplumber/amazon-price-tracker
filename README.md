@@ -1,36 +1,14 @@
-# mrajab-amzn-price-tracker
-Getting Started
-This project is a starting point for developing an Amazon Price Tracker. A few resources to get you started 
+# Amazon Price Tracker
 
--Visual Studio Code
--Datacamp
--Dev Ed
--Amazon Price Tracker
+This script will scrape the prices of products from amazon.co.uk, save
+them, and the next time it is run it will compare the prices and let you
+know if they've dropped or risen.  There is no output if the price
+hasn't changed.
 
+Should move the list of product URLs to an external file rather than
+have to update the source code every time you want to monitor something
+new.
 
-Project Requirements
+Requires python3 and BeautifulSoup4.
 
-1.Visual Studio Code.
-
-2.Python.
-
-3.Internet connectivity.
-
-How to setup and run the application
-
-.Clone the repo on your local machine
-
-.Copy the project files into your Visual studio code project directory.
-
-.Open the project.
-
-.At the end of the file add the following.
-
-#print(get_product_details("Insert an Amazon URL"))#
-
-.Open the terminal where you have your scraper.py file.
-
-Run the scraper.py like so
-
-#$ python3 scraper.py#
-
+Forked from https://github.com/learningdollars/mrajab-amzn-price-tracker
