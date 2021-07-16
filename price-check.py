@@ -7,20 +7,37 @@
 # Added logic to save prices into a json file, then load them the next
 # time to compare.  Could do with a lot more error handling.
 
+# Requires a directory AmazonPriceCheck in a user's home directory.  Feel free
+# to change this to a name of your choosing by editing priceCheckDir.  Inside
+# that are two files containing the last and current price run (which are
+# generated automatically), and a list of products to check.
+#
+# products.json is just a list of URLs of Amazon products, e.g.:
+# [
+#   "https://www.amazon.co.uk/Govee-Thermometer-Hygrometer-Temperature-Greenhouse/dp/B086YYL439/",
+#   "https://www.amazon.co.uk/Govee-Thermometer-Hygrometer-Temperature-Greenhouse/dp/B08XQD8MFZ/"
+# ]
+
+
 import requests
 import re
 import json
 import os
 from bs4 import BeautifulSoup
 
-products = [
-    "https://www.amazon.co.uk/Govee-Thermometer-Hygrometer-Temperature-Greenhouse/dp/B086YYL439/",
-    "https://www.amazon.co.uk/Govee-Thermometer-Hygrometer-Temperature-Greenhouse/dp/B08XQD8MFZ/" ]
-
 productPrices = {}
 lastProdPrices = {}
-dbFileName = "prices.json"
-dbOldFileName = "prices-old.json"
+homeDir = os.path.expanduser("~")
+priceCheckDir = "AmazonPriceCheck"
+pricePath = os.path.join(homeDir, priceCheckDir)
+dbFileName = os.path.join(pricePath, "prices.json")
+dbOldFileName = os.path.join(pricePath, "prices-old.json")
+productFileName = os.path.join(pricePath, "products.json")
+
+productFile = open(productFileName, "r")
+products = json.load(productFile)
+productFile.close
+
 
 def get_converted_price(price):
     converted_price = float(re.sub(r"[^\d.]", "", price))
