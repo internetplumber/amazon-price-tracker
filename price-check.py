@@ -77,6 +77,8 @@ def get_product_details(url):
             details = None
     return details
 
+# Now the body of the script.  First of all, open the previous price date,
+# stored in JSON format.
 try:
     dbReadFH = open(dbFileName, 'r')
     lastProdPrices = json.load(dbReadFH)
@@ -84,12 +86,15 @@ try:
 except:
     print("No old prices found, assuming first run.")
 
+# Get the product details for each of items we want to track.
 numProducts = len(products)
 for prodIdx in range (0, numProducts):
     prodDetails = get_product_details(products[prodIdx])
     if prodDetails is not None:
         productPrices[prodDetails["url"]] = prodDetails
     else:
+        # If we can't find current prices, should change this to store
+        # previous price so it doesn't appear as a new item next time around.
         print("Unable to get product details for " + products[prodIdx])
 
 for prodURL in productPrices.keys():
@@ -115,6 +120,7 @@ try:
 except Exception:
     pass
 
+# Dump the new prices as JSON ready for next time.
 dbFH = open(dbFileName, 'w')
 json.dump(productPrices, dbFH, indent=2)
 dbFH.close()
