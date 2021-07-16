@@ -15,10 +15,11 @@ import os
 from bs4 import BeautifulSoup
 
 products = [
-    "https://www.amazon.co.uk/Govee-Thermometer-Hygrometer-Temperature-Greenhouse/dp/B086YYL439/ref=sr_1_11?dchild=1&keywords=govee&qid=1626431269&sr=8-11&th=1",
-    "https://www.amazon.co.uk/Govee-Thermometer-Hygrometer-Temperature-Greenhouse/dp/B08XQD8MFZ/ref=sr_1_11?dchild=1&keywords=govee&qid=1626431269&sr=8-11&th=1" ]
+    "https://www.amazon.co.uk/Govee-Thermometer-Hygrometer-Temperature-Greenhouse/dp/B086YYL439/",
+    "https://www.amazon.co.uk/Govee-Thermometer-Hygrometer-Temperature-Greenhouse/dp/B08XQD8MFZ/" ]
 
 productPrices = {}
+lastProdPrices = {}
 dbFileName = "prices.json"
 dbOldFileName = "prices-old.json"
 
@@ -46,8 +47,10 @@ def extract_url(url):
 
 
 def get_product_details(url):
+    # ToDo: add a few different User-Agent strings that can be tried at random
+    # to try and avoid captchas because we look like the robot that we are.
     headers = {
-        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101 Firefox/68.0"
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_4) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15"
     }
     details = {"name": "", "price": 0, "deal": True, "url": ""}
     _url = extract_url(url)
@@ -60,6 +63,11 @@ def get_product_details(url):
         price = soup.find(id="priceblock_dealprice")
         if price is None:
             price = soup.find(id="priceblock_ourprice")
+            if price is None:
+                # Can't locate a price, see what the webpage says (it's
+                # probably Amazon checking we're not a robot)...
+                print("Unable to get price!")
+                print(page.content)
             details["deal"] = False
         if title is not None and price is not None:
             details["name"] = title.get_text().strip()
@@ -69,14 +77,20 @@ def get_product_details(url):
             details = None
     return details
 
-dbReadFH = open(dbFileName, 'r')
-lastProdPrices = json.load(dbReadFH)
-dbReadFH.close()
+try:
+    dbReadFH = open(dbFileName, 'r')
+    lastProdPrices = json.load(dbReadFH)
+    dbReadFH.close()
+except:
+    print("No old prices found, assuming first run.")
 
 numProducts = len(products)
 for prodIdx in range (0, numProducts):
     prodDetails = get_product_details(products[prodIdx])
-    productPrices[prodDetails["url"]] = prodDetails
+    if prodDetails is not None:
+        productPrices[prodDetails["url"]] = prodDetails
+    else:
+        print("Unable to get product details for " + products[prodIdx])
 
 for prodURL in productPrices.keys():
     if prodURL in lastProdPrices.keys():
@@ -86,14 +100,21 @@ for prodURL in productPrices.keys():
             print(productPrices[prodURL]['name'])
             print(productPrices[prodURL]['url'])
             if oldPrice < newPrice:
-             print("Price rise!")
+                print("Price rise!")
             elif newPrice > oldPrice:
-             print("Price drop!")
+                print("Price drop!")
             print("Last price: " + str(lastProdPrices[prodURL]['price']))
             print("New price:  " + str(productPrices[prodURL]['price']))
+    else:
+        print("New product found!")
+        print(productPrices[prodURL]['name'])
+        print("£" + str(productPrices[prodURL]['price']))
 
-os.rename(dbFileName, dbOldFileName)
+try:
+    os.rename(dbFileName, dbOldFileName)
+except Exception:
+    pass
+
 dbFH = open(dbFileName, 'w')
 json.dump(productPrices, dbFH, indent=2)
 dbFH.close()
-
