@@ -92,8 +92,9 @@ for prodIdx in range (0, numProducts):
     if prodDetails is not None:
         productPrices[prodDetails["url"]] = prodDetails
     else:
-        # If we can't find current prices, should change this to store
-        # previous price so it doesn't appear as a new item next time around.
+        url = extract_url(products[prodIdx])
+        if lastProdPrices[url] is not None:
+            productPrices[url] = lastProdPrices[url]
         print("Unable to get product details for " + products[prodIdx])
 
 for prodURL in productPrices.keys():
