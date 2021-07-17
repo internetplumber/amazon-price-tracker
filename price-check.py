@@ -123,7 +123,7 @@ for prodURL in productPrices.keys():
             print(productPrices[prodURL]['url'])
             if oldPrice < newPrice:
                 print("Price rise!")
-            elif newPrice > oldPrice:
+            elif newPrice < oldPrice:
                 print("Price drop!")
             print("Last price: " + str(lastProdPrices[prodURL]['price']))
             print("New price:  " + str(productPrices[prodURL]['price']))
