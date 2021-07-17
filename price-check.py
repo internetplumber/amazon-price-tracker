@@ -125,12 +125,12 @@ for prodURL in productPrices.keys():
                 print("Price rise!")
             elif newPrice < oldPrice:
                 print("Price drop!")
-            print("Last price: " + str(lastProdPrices[prodURL]['price']))
-            print("New price:  " + str(productPrices[prodURL]['price']))
+            print("Last price: £" + format(lastProdPrices[prodURL]['price'], '.2f'))
+            print("New price:  £" + format(productPrices[prodURL]['price'], '.2f'))
     else:
         print("New product found!")
         print(productPrices[prodURL]['name'])
-        print("£" + str(productPrices[prodURL]['price']))
+        print("£" + format(productPrices[prodURL]['price'], '.2f'))
 
 try:
     os.rename(dbFileName, dbOldFileName)
