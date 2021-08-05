@@ -80,8 +80,7 @@ def get_product_details(url):
         if price is None:
             price = soup.find(id="priceblock_ourprice")
             if price is None:
-                # Can't locate a price, see what the webpage says (it's
-                # probably Amazon checking we're not a robot)...
+                # Can't locate a price
                 print("Unable to get price for " + url)
             details["deal"] = False
         if title is not None and price is not None:
