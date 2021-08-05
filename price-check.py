@@ -82,8 +82,7 @@ def get_product_details(url):
             if price is None:
                 # Can't locate a price, see what the webpage says (it's
                 # probably Amazon checking we're not a robot)...
-                print("Unable to get price!")
-                print(page.content)
+                print("Unable to get price for " + url)
             details["deal"] = False
         if title is not None and price is not None:
             details["name"] = title.get_text().strip()
