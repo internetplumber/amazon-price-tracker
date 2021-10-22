@@ -6,7 +6,7 @@ know if they've dropped or risen.  There is no output if the price
 hasn't changed.
 
 Uses a directory "AmazonPriceCheck" to store state and list products,
-this can be esaily changed in the source code.
+this can be easily changed in the source code.
 
 Requires python3 and BeautifulSoup4.
 
